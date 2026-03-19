@@ -1,2 +1,135 @@
-# CUSTOMER-CHURN-PREDICTOR
-This project builds a machine learning model to predict churn among business customers for a leading Bulgarian telecom operator. Using a real-world dataset of 8,454 business accounts with 14 features, we identify customers at high risk of leaving and provide actionable retention strategies.
+# Telecom Customer Churn Prediction & Retention System
+
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A machine learning project to predict churn among business customers for a Bulgarian telecom operator. The system identifies high-risk customers and generates personalized retention offers using Gemini API.
+
+---
+### Running the Notebook
+You can explore the analysis in Google Colab:  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1iVB68xI1p1yhjZIbOPg9aRZ5HQHDLk1h?usp=sharing)  
+
+## 📌 Overview
+
+Customer churn is a critical challenge for telecom companies. This project aims to build a robust classification model to predict which business customers are likely to leave, enabling proactive retention campaigns. The dataset (8,454 records, 14 features) is sourced from a real Bulgarian telecom operator and includes both small, medium, and large enterprises.
+
+**Goal:** Achieve ≥85% recall in identifying churners while providing interpretable predictions and automated offer generation.
+
+---
+
+## 📊 Dataset
+
+- **Source:** Real records from a leading Bulgarian telecom operator (business customers)
+- **Instances:** 8,454
+- **Features:** 14 attributes + target (`Churn`)
+- **Target distribution:** 
+  - No churn: 93.5%
+  - Churn: 6.5%
+
+**Features include:**
+- `PID` – Personal identification number
+- `CRM PID Value Segment` – Customer value segment
+- `Billing ZIP` – Location code
+- `КА name` – Key Account Manager name
+- `Active subscribers`, `Not Active subscribers`, `Suspended subscribers`, `Total Subscribers`
+- `Average Mobile Revenue`, `Average Fix Revenue`, `Total Revenue`, `ARPU`
+- `Churn` – target (Yes/No)
+
+---
+
+## 🧠 Methodology
+
+### 1. Data Preprocessing
+- Handling missing values, outliers, and inconsistent data types.
+- **Chi‑square test** applied to categorical columns (e.g., `PID` and `КА name`) to identify high dependencies; merging correlated columns to reduce multicollinearity.
+- Encoding categorical variables.
+
+### 2. Exploratory Data Analysis (EDA)
+- Distribution plots for numerical features.
+- Correlation heatmaps to understand feature relationships.
+- Churn rate analysis across different segments (e.g., value segment, location).
+
+### 3. Feature Engineering
+- Creating new features:
+  - `Revenue per Active Subscriber` = Total Revenue / Active subscribers
+  - `Active Ratio` = Active subscribers / Total Subscribers
+  - `Engagement Score` (composite based on ARPU and active ratio)
+- Merging highly dependent columns (based on Chi‑square results) into combined categorical features.
+
+### 4. Modeling
+We benchmark several classifiers:
+- Logistic Regression (baseline)
+- Random Forest
+- XGBoost
+- (Optional: LightGBM, SVM)
+
+**Evaluation focus:**
+- **Recall** (to capture as many actual churners as possible)
+- F1‑score (balance between precision and recall)
+- ROC‑AUC
+
+**Target:** ≥85% recall on test set.
+
+Class imbalance is addressed using **SMOTE** or class weights.
+
+### 5. Model Interpretability
+- Feature importance plots (from tree‑based models)
+- SHAP values for individual predictions (planned)
+
+### 6. Deployment (Streamlit)
+The final model will be deployed as an interactive web app where users can:
+- Upload new customer data (CSV)
+- Get churn predictions with probabilities
+- View explanations (feature contributions)
+- Download results
+
+### 7. Gemini API Integration
+For customers predicted as high‑risk, the app will call **Google Gemini API** to generate personalized retention offers (e.g., discount messages) based on their usage patterns and segment. Example prompt:
+> "Generate a short, friendly discount message for a business customer in the high‑value segment who has low active subscriber ratio."
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.9+
+- Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Training the Model
+```bash
+python src/train.py --data data/customer_data.csv
+```
+
+### Running the Streamlit App
+```bash
+streamlit run app/streamlit_app.py
+```
+
+## 📈 Results (to be updated)
+
+| Model               | Accuracy | Recall | F1-score | ROC-AUC |
+|---------------------|----------|--------|----------|---------|
+| Logistic Regression | TBD      | TBD    | TBD      | TBD     |
+| Random Forest       | TBD      | TBD    | TBD      | TBD     |
+| XGBoost             | TBD      | TBD    | TBD      | TBD     |
+
+Best model will be selected based on recall and F1.
+
+## 🔮 Future Work
+
+- Incorporate additional external data (e.g., competitor offers, economic indicators).
+- Build a REST API for model serving.
+- A/B test retention offers generated by Gemini.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgements
+
+- Dataset provided by a Bulgarian telecom operator (anonymized for public use).
+- Inspired by real‑world business needs to reduce churn.
